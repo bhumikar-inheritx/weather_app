@@ -1,0 +1,153 @@
+import 'package:flutter/material.dart';
+import 'package:wethar_app/home.dart';
+
+void main() {
+  runApp(
+    MaterialApp(
+      home: MyApp(),
+      theme: ThemeData(colorSchemeSeed: Colors.brown[50]),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+     final TextEditingController _email = TextEditingController();
+     final TextEditingController _password = TextEditingController();
+
+    void _submitForm() {
+      if (_formKey.currentState!.validate()) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyHome()),
+        );
+      }
+    }
+
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.only(top: 100),
+        child: Center(
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 120,
+                backgroundImage: NetworkImage(
+                  "https://cdn.pixabay.com/animation/2025/06/03/13/03/13-03-18-587_512.gif",
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                "Weather App",
+                style: TextStyle(
+                  color: Colors.teal[900],
+                  fontSize: 40,
+                  fontWeight: FontWeight.w700,
+                  wordSpacing: 10,
+                  letterSpacing: 2,
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Container(
+                  width: 350,
+                  height: 400,
+                  decoration: BoxDecoration(
+                    // color: Colors.deepPurple[50],
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    boxShadow: [
+                      BoxShadow(color: Colors.lime.shade200, blurRadius: 20),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      right: 40,
+                      left: 40,
+                      top: 20,
+                    ),
+                    child: Form(
+                      key:  _formKey,
+                      child: Column(
+                        spacing: 30,
+                        children: [
+                          Icon(
+                            Icons.person_3,
+                            color: Colors.deepPurple,
+                            size: 70,
+                          ),
+                          TextFormField(
+                            controller: _email,
+                            decoration: InputDecoration(
+                              labelText: "Email",
+                              prefixIcon: Icon(
+                                Icons.email,
+                                color: Colors.deepPurple,
+                              ),
+                              floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              labelStyle: TextStyle(
+                                fontSize: 20,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter Email';
+                              }
+                            },
+                          ),
+                          TextFormField(
+                            controller: _password,
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              prefixIcon: Icon(
+                                Icons.lock,
+                                color: Colors.deepPurple,
+                              ),
+                              floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              labelStyle: TextStyle(
+                                fontSize: 20,
+                                color: Colors.deepPurple,
+                              ),
+
+                              // suffixIcon: Icon(Icon,color: Colors.deepPurple)
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter password';
+                              }
+                            },
+                          ),
+                          // SizedBox(height: 5,),
+                          ElevatedButton(
+                            onPressed: _submitForm,
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepPurple[400],
+                              elevation: 7,
+                              shadowColor: Colors.deepPurple,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
