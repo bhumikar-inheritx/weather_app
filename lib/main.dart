@@ -18,6 +18,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool _isPasswordVisible = true;
   bool _isLoading = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -70,7 +71,8 @@ class _MyAppState extends State<MyApp> {
                 CircleAvatar(
                   radius: 120,
                   backgroundImage: NetworkImage(
-                    "https://cdn.pixabay.com/animation/2025/06/03/13/03/13-03-18-587_512.gif",
+                    "https://cdn.pixabay.com/animation/2025/06/03/13/03/"
+                    "13-03-18-587_512.gif",
                   ),
                 ),
                 SizedBox(height: 20),
@@ -122,58 +124,76 @@ class _MyAppState extends State<MyApp> {
                                   color: Colors.deepPurple,
                                 ),
                                 floatingLabelBehavior:
-                                    FloatingLabelBehavior.auto,
+                                FloatingLabelBehavior.auto,
                                 labelStyle: TextStyle(
                                   fontSize: 20,
                                   color: Colors.deepPurple,
                                 ),
+
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Please enter Email';
+                                }
+                                if (!value.contains('@')) {
+                                  return 'Please enter valid Email';
                                 }
                                 return null;
                               },
                             ),
                             TextFormField(
                               controller: _password,
-                              obscureText: true,
+                              obscureText: _isPasswordVisible,
                               decoration: InputDecoration(
                                 labelText: "Password",
+                                suffixIcon: IconButton(
+                                  icon: Icon(_isPasswordVisible ? Icons
+                                      .visibility_off : Icons.visibility),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isPasswordVisible = !_isPasswordVisible;
+                                    });
+                                  },
+                                ),
                                 prefixIcon: Icon(
                                   Icons.lock,
                                   color: Colors.deepPurple,
                                 ),
                                 floatingLabelBehavior:
-                                    FloatingLabelBehavior.auto,
+                                FloatingLabelBehavior.auto,
                                 labelStyle: TextStyle(
                                   fontSize: 20,
                                   color: Colors.deepPurple,
                                 ),
 
-                                // suffixIcon: Icon(Icon,color: Colors.deepPurple)
+                                // suffixIcon:Icon(Icon,color:Colors.deepPurple)
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Please enter password';
                                 }
+                                if (value.length < 6) {
+                                  return 'Password should be at least 6 '
+                                      'Characters';
+                                }
+                                return null;
                               },
                             ),
                             // SizedBox(height: 5,),
-                            ElevatedButton(
+                            _isLoading
+                                ? SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(),
+                            )
+                                : ElevatedButton(
                               onPressed: _isLoading ? null : _submitForm,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.deepPurple[400],
                                 elevation: 7,
                                 shadowColor: Colors.deepPurple,
                               ),
-                              child: _isLoading
-                                  ? SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : Text(
+                              child: Text(
                                       "Login",
                                       style: TextStyle(
                                         color: Colors.white,

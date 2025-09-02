@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/wheatherCard.dart';
 
 class MyHome extends StatefulWidget {
   const MyHome({super.key});
@@ -8,45 +9,36 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
-  final TextEditingController _clear = TextEditingController();
-  final TextEditingController _controller = TextEditingController();
+  late TextEditingController _controller = TextEditingController();
+  List<WeatherDataModel> result = [];
 
-  final Map<String, Map<String, String>> _allWeather = {
-    "Ahmedabad": {
-      "Temperature": "35°",
-      "Humidity": "10°",
-      "Weather description": "clouds",
-    },
-    "Rajkot": {
-      "Temperature": "40°",
-      "Humidity": "8°",
-      "Weather description": "wind",
-    },
-    "Mumbai": {
-      "Temperature": "30°",
-      "Humidity": "35°",
-      "Weather description": "cloudy",
-    },
+  @override
+  void initState() {
+    _controller = TextEditingController();
+    result = weatherMockData;
+    super.initState();
+  }
 
-    "Baroda": {
-      "Temperature": "45°",
-      "Humidity": "6°",
-      "Weather description": "Sunny",
-    },
-    "Surat": {
-      "Temperature": "10°",
-      "Humidity": "2°",
-      "Weather description": "rainy",
-    },
-  };
-
-  Map<String, String>? result;
+  @override
+  void dispose() {
+    _controller.clear();
+    super.dispose();
+  }
 
   void _searchCity() {
-    String city = _controller.text.trim();
+    String query = _controller.text.toLowerCase();
     setState(() {
-      result = _allWeather[city];
+      result = weatherMockData
+          .where((data) => data.city.toLowerCase().contains(query))
+          .toList();
     });
+  }
+
+  void _clear() {
+    _controller.clear();
+    result = weatherMockData;
+    FocusScope.of(context).unfocus();
+    setState(() {});
   }
 
   @override
@@ -74,9 +66,7 @@ class _MyHomeState extends State<MyHome> {
                     icon: Icon(Icons.search),
                   ),
                   suffixIcon: IconButton(
-                    onPressed: () {
-                      _clear.clear();
-                    },
+                    onPressed: () => _clear(),
                     icon: Icon(Icons.close),
                   ),
 
@@ -87,62 +77,40 @@ class _MyHomeState extends State<MyHome> {
                   ),
                   filled: true,
                 ),
+                // onChanged: (_){
+                //   _searchCity();
+                // },
                 onSubmitted: (_) => _searchCity(),
               ),
             ),
-            SizedBox(height: 30),
-            if (result != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 300, right: 20, left: 20),
-                child: Container(
-                  height: 200,
-                  width: 400,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
 
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 50,
-                        left: 20,
-                        right: 20,
-                      ),
-                      child: Column(
-                        children: result!.entries.map((e) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                e.key,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              SizedBox(width: 30),
-                              Text(
-                                e.value,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      ),
+            Padding(
+              padding: const EdgeInsets.only(top: 150),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        final WeatherDataModel weather = result[index];
+                        return CommonWeatherCard(weather: weather);
+                      },
+                      itemCount: result.length,
                     ),
                   ),
-                ),
+                ],
               ),
+            ),
+
             Padding(
-              padding: const EdgeInsets.only(top: 600, right: 30, left: 150),
+              padding: const EdgeInsets.only(top: 775, left: 150),
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
+                style: ElevatedButton.styleFrom(
+                  elevation: 8,
+                  shadowColor: Colors.black,
+                ),
                 child: Text(
                   "Back",
                   style: TextStyle(color: Colors.black, fontSize: 25),
@@ -160,7 +128,7 @@ class WeatherDataModel {
   final double temp;
   final double humidity;
   final String desc;
-  final String city;
+  late final String city;
 
   WeatherDataModel({
     required this.city,
@@ -171,18 +139,8 @@ class WeatherDataModel {
 }
 
 final List<WeatherDataModel> weatherMockData = [
-  WeatherDataModel(city: 'City 1', temp: 2, humidity: 3, desc: ''),
-  WeatherDataModel(city: 'City 1', temp: 2, humidity: 3, desc: ''),
-  WeatherDataModel(city: 'City 1', temp: 2, humidity: 3, desc: ''),
+  WeatherDataModel(city: 'Ahmedabad', temp: 38, humidity: 12, desc: 'clouds'),
+  WeatherDataModel(city: 'Rajkot', temp: 29, humidity: 3, desc: 'Wind'),
+  WeatherDataModel(city: 'Surat', temp: 15, humidity: 9, desc: 'Rainy'),
+  WeatherDataModel(city: 'Baroda', temp: 41, humidity: 2, desc: 'Sunny'),
 ];
-
-class CommonWeatherCard extends StatelessWidget {
-  const CommonWeatherCard({super.key, required this.weather});
-
-  final WeatherDataModel weather;
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
