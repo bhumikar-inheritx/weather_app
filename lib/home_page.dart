@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/wheatherCard.dart';
+import 'package:weather_app/wheather_card.dart';
 
 class MyHome extends StatefulWidget {
   const MyHome({super.key});
@@ -77,10 +77,10 @@ class _MyHomeState extends State<MyHome> {
                   ),
                   filled: true,
                 ),
-                // onChanged: (_){
-                //   _searchCity();
-                // },
-                onSubmitted: (_) => _searchCity(),
+                onChanged: (_){
+                  _searchCity();
+                },
+                // onSubmitted: (_) => _searchCity(),
               ),
             ),
 
@@ -102,7 +102,7 @@ class _MyHomeState extends State<MyHome> {
             ),
 
             Padding(
-              padding: const EdgeInsets.only(top: 775, left: 150),
+              padding: const EdgeInsets.only(top: 850, left: 150),
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
